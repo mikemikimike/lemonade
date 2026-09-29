@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <filesystem>
+#include "lemon/backends/backend_registry.h"
 #include "lemon/backends/hf_cache_util.h"
 #include "lemon/utils/path_utils.h"
 
@@ -128,6 +129,14 @@ void BackendOps::download_model(const ModelInfo& info, bool do_not_upgrade,
 const BackendOps* default_backend_ops() {
     static const BackendOps kDefault;
     return &kDefault;
+}
+
+std::optional<utils::SetupFailure> container_setup_failure(const std::string& recipe,
+                                                           const std::string& backend) {
+    if (auto failure = ops_for(recipe)->check_container_host(backend)) {
+        return failure;
+    }
+    return utils::ContainerManager::global().check_setup();
 }
 
 } // namespace backends

@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include "lemon/model_manager.h"  // ModelInfo, DownloadProgressCallback
+#include "lemon/utils/container_manager.h"
 
 namespace lemon {
 
@@ -160,7 +161,21 @@ public:
         (void)default_install_command;
         return std::nullopt;
     }
+
+    // A host check a container backend runs before the setup checks of its
+    // install type. Returns the failure and its fix, or nullopt when the host
+    // passes. Default: no extra check.
+    virtual std::optional<utils::SetupFailure> check_container_host(
+        const std::string& backend) const {
+        (void)backend;
+        return std::nullopt;
+    }
 };
+
+// The first setup check a container backend fails on this host, its own host
+// check first and then its install type's, or nullopt when every check passes.
+std::optional<utils::SetupFailure> container_setup_failure(const std::string& recipe,
+                                                           const std::string& backend);
 
 // Shared default ops instance for backends that override nothing.
 const BackendOps* default_backend_ops();

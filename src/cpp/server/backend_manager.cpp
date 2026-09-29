@@ -1,6 +1,7 @@
 #include "lemon/backend_manager.h"
 #include "lemon/backend_version_policy.h"
 #include "lemon/backends/backend_descriptor_registry.h"
+#include "lemon/backends/backend_ops.h"
 #include "lemon/backends/backend_utils.h"
 #include "lemon/runtime_config.h"
 #include "lemon/system_info.h"
@@ -170,7 +171,7 @@ void install_container_backend(const std::string& recipe, const std::string& bac
         throw std::runtime_error(recipe + ":" + backend + " is a container backend, which runs on Linux");
     }
     const auto& manager = utils::ContainerManager::global();
-    if (auto failure = manager.check_setup()) {
+    if (auto failure = backends::container_setup_failure(recipe, backend)) {
         throw std::runtime_error("Cannot install " + recipe + ":" + backend + ": " +
                                  failure->text());
     }
