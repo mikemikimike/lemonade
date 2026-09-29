@@ -162,9 +162,8 @@ public:
         return std::nullopt;
     }
 
-    // A host check a container backend runs before the setup checks of its
-    // install type. Returns the failure and its fix, or nullopt when the host
-    // passes. Default: no extra check.
+    // An extra host requirement of `backend`, as the failure and its fix, or
+    // nullopt when met. Default: none.
     virtual std::optional<utils::SetupFailure> check_container_host(
         const std::string& backend) const {
         (void)backend;
@@ -172,8 +171,7 @@ public:
     }
 };
 
-// The first setup check a container backend fails on this host, its own host
-// check first and then its install type's, or nullopt when every check passes.
+// check_container_host() first, then ContainerManager::check_setup().
 std::optional<utils::SetupFailure> container_setup_failure(const std::string& recipe,
                                                            const std::string& backend);
 
