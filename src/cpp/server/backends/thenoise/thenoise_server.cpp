@@ -144,12 +144,9 @@ void TheNoiseServer::load(const std::string& model_name,
     }
 
     // The portable thenoise launcher sets up LD_LIBRARY_PATH / CC / ROCm env itself.
-    std::vector<std::pair<std::string, std::string>> env_vars;
-
     ServerCommand command;
     command.program = exe_path;
     command.args = std::move(args);
-    command.env = std::move(env_vars);
     command.port = port_;
     // thenoise compiles the DiT with torch.compile on first load, which can take
     // several minutes; give it a generous startup window.
